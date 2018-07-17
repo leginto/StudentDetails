@@ -1,7 +1,17 @@
 package in.leginto.studentstatus.client;
 
 
+import java.sql.Savepoint;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.eclipse.jetty.util.ajax.JSON;
+
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dev.json.JsonValue;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -17,11 +27,17 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.layout.client.Layout;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+//import com.google.gwt.user.client.rpc.core.java.util.Arrays;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -31,21 +47,33 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.view.client.ListDataProvider;
+//import com.sun.org.apache.xpath.internal.operations.String;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
+import java_cup.parser;
 
 public class StudentStatus implements EntryPoint {
 	
 	
 	private static class Students
 	{
+		private final String sid;
 		private final String name;
 		private final String email;
 		private final String mobile;
 		
-		public Students(String name, String email, String mobile)
+		public Students(String sid , String name, String email, String mobile)
 		{
+			this.sid = sid;
 			this.name = name;
 			this.email = email;
 			this.mobile = mobile;
+		}
+		
+		public String getSid()
+		{
+			return sid;
 		}
 		
 		public String getName()
@@ -63,23 +91,61 @@ public class StudentStatus implements EntryPoint {
 		}
 		
 		
+		
 	}
 	
+//	private static List<Students> STUDENTS = 
 	
-	
+	private static List<Students> STUDENTS = new ArrayList<Students>();
+			
+			
+			/*
+			asList(new Students("STD0001","name", "chandfi", "841684354"),
+			new Students("STD0002", "ndfge", "chandfi", "8548514354"),
+			new Students("STD0003", "ndffewa", "sdfadfandfi", "8646684354"));
+			*/
 
 	public void onModuleLoad() {
 		
 		
+		// to collect data from studentdata.json
 		
-		RequestBuilder requestBuild = new RequestBuilder(null,"studentdata.json");
+		
+		
+		final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET,"studentnames.json");
+		
 		
 		try {
-			requestBuild.sendRequest(null, new RequestCallback() {
+			requestBuilder.sendRequest(null, new RequestCallback() {
 				
 				@Override
 				public void onResponseReceived(Request request, Response response) {
 					// TODO Auto-generated method stub
+					
+					JSONArray jsonArray = (JSONArray) JSONParser.parseStrict(response.getText());
+					
+					for(int i=0; i<jsonArray.size(); i++)
+					{
+						JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+						STUDENTS.add(new Students(
+								jsonObject.get("sid").toString(), 
+								jsonObject.get("sname").toString(), 
+								jsonObject.get("semail").toString(), 
+								jsonObject.get("smobile").toString()));
+					}
+					
+					
+					//Window.alert(jsonObject.get("sid").toString());
+					
+					
+					
+					//JSONValue jsonValue = JSONParser.parseStrict(response.getText());
+					
+					//Window.alert(jsonValue.isObject().get("sid").toString());
+					
+					//Window.alert(response.toString());
+					
+					Window.alert(response.getText());
 					
 					
 				}
@@ -90,10 +156,12 @@ public class StudentStatus implements EntryPoint {
 					
 				}
 			});
-		} catch (RequestException e) {
+		} catch (RequestException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
+		
+		
 		
 		
 		
@@ -101,12 +169,65 @@ public class StudentStatus implements EntryPoint {
 		
 		CellTable<Students> table = new CellTable<Students>();
 		
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		//table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		
+		
+		
+		
 		
 		
 		
 		// create 4 columns 
+		TextColumn<Students> sidColumn = new TextColumn<StudentStatus.Students>() {
+
+			@Override
+			public String getValue(Students object) {
+				// TODO Auto-generated method stub
+				return object.getSid();
+			}
+		};
 		
+		TextColumn<Students> nameColumn = new TextColumn<StudentStatus.Students>() {
+
+			@Override
+			public String getValue(Students object) {
+				// TODO Auto-generated method stub
+				return object.getName();
+			}
+		};
+		
+		TextColumn<Students> emailColumn = new TextColumn<StudentStatus.Students>() {
+
+			@Override
+			public String getValue(Students object) {
+				// TODO Auto-generated method stub
+				return object.getEmail();
+			}
+		};
+		
+		TextColumn<Students> mobileColumn = new TextColumn<StudentStatus.Students>() {
+
+			@Override
+			public String getValue(Students object) {
+				// TODO Auto-generated method stub
+				return object.getMobile();
+			}
+		};
+		
+		table.addColumn(sidColumn,"Student ID");
+		table.addColumn(nameColumn, "Name");
+		table.addColumn(emailColumn, "E-mail");
+		table.addColumn(mobileColumn, "Mobile Number");
+		
+		final ListDataProvider<Students> dataProvider = new ListDataProvider<Students>();
+		
+		dataProvider.addDataDisplay(table);
+		
+		
+		final List<Students> list = dataProvider.getList();
+		
+		for(Students student : STUDENTS)
+			list.add(student);
 		
 		
 		// read data from json file and store in CellTable
@@ -120,6 +241,7 @@ public class StudentStatus implements EntryPoint {
 		HorizontalPanel horizPan1 = new HorizontalPanel();
 		HorizontalPanel horizPan2 = new HorizontalPanel();
 		HorizontalPanel horizPan3 = new HorizontalPanel();
+		HorizontalPanel horizPan4 = new HorizontalPanel();
 		
 		
 		// text boxes
@@ -143,18 +265,18 @@ public class StudentStatus implements EntryPoint {
 			}
 		});
 		
-		nameText.addMouseOutHandler(new MouseOutHandler() {
+		nameText.addBlurHandler(new BlurHandler() {
 			
 			@Override
-			public void onMouseOut(MouseOutEvent event) {
+			public void onBlur(BlurEvent event) {
 				// TODO Auto-generated method stub
 				if(nameText.getText().length()==0)
 				{
 					nameText.setText("Enter Name");
 				}
-				
 			}
 		});
+		
 		//------------------
 		emailText.addMouseDownHandler(new MouseDownHandler() {
 			
@@ -168,11 +290,10 @@ public class StudentStatus implements EntryPoint {
 				
 			}
 		});
-		
-		emailText.addMouseOutHandler(new MouseOutHandler() {
+		emailText.addBlurHandler(new BlurHandler() {
 			
 			@Override
-			public void onMouseOut(MouseOutEvent event) {
+			public void onBlur(BlurEvent event) {
 				// TODO Auto-generated method stub
 				if(emailText.getText().length()==0)
 				{
@@ -181,6 +302,7 @@ public class StudentStatus implements EntryPoint {
 				
 			}
 		});
+		
 		//-----------------
 		mobileText.addMouseDownHandler(new MouseDownHandler() {
 			
@@ -195,22 +317,17 @@ public class StudentStatus implements EntryPoint {
 			}
 		});
 		
-		mobileText.addMouseOutHandler(new MouseOutHandler() {
+		mobileText.addBlurHandler(new BlurHandler() {
 			
 			@Override
-			public void onMouseOut(MouseOutEvent event) {
+			public void onBlur(BlurEvent event) {
 				// TODO Auto-generated method stub
 				if(mobileText.getText().length()==0)
 				{
 					mobileText.setText("Eg: 9999999999");
 				}
-				
 			}
 		});
-
-		
-		
-		
 		
 		
 		horizPan1.add(new Label(" \0 \0 Name: \0 \0  \0 \0  \0 \0  \0 \0  \0 \0 "));
@@ -223,14 +340,23 @@ public class StudentStatus implements EntryPoint {
 		horizPan3.add(mobileText);
 		
 		
+		
 		// save button
 		Button saveButton = new Button("Save");
+		Button cancelButton = new Button("Cancel");
 		final VerticalPanel vertiPan = new VerticalPanel();
+		
+		horizPan4.add(saveButton);
+		horizPan4.add(cancelButton);
+		
+		
 		
 		vertiPan.add(horizPan1);
 		vertiPan.add(horizPan2);
 		vertiPan.add(horizPan3);
-		vertiPan.add(saveButton);
+		vertiPan.add(horizPan4);
+		
+		
 		
 		
 		// add student command
@@ -301,9 +427,34 @@ public class StudentStatus implements EntryPoint {
 				
 				// logic to add (name, email, mobile)to the existing record
 				
+				if(nameText.getText().toString() != "Enter Name" && 
+						emailText.getText().toString() != "email@example.com" && 
+						mobileText.getText().toString()!= "Eg: 9999999999")
+				{
+					String newSid = ""+(list.size()+1);
+					while(newSid.length()<4)
+						newSid = "0"+newSid;
+					
+					
+					
+					list.add(new Students("STD"+newSid ,nameText.getText().toString(), 
+							emailText.getText().toString(), 
+							mobileText.getText().toString()));
+					
+					dataProvider.refresh();
+					
+				}
 				
 				
-				
+			}
+		});
+		
+		cancelButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				addStuDialog.hide();
 				
 			}
 		});
@@ -311,7 +462,7 @@ public class StudentStatus implements EntryPoint {
 		
 		
 		RootPanel.get().add(mainMenu);
-		
+		RootPanel.get().add(table);
 		
 		
 		

@@ -1,0 +1,29 @@
+[
+	{
+		"sid" : "STD001",
+		"sname" : "Chandra",
+		"semail" : "chandra@gmail.com",
+		"smobile" : "9647248751"	
+	},
+	
+	{
+		"sid" : "STD002",
+		"sname" : "Chandra S",
+		"semail" : "chandra2@gmail.com",
+		"smobile" : "9647245451"	
+	},
+	
+	{
+		"sid" : "STD003",
+		"sname" : "Chandra R",
+		"semail" : "chandra3@gmail.com",
+		"smobile" : "9644521751"	
+	},
+	
+	{
+		"sid" : "STD004",
+		"sname" : "R Chandra",
+		"semail" : "chandra4@gmail.com",
+		"smobile" : "9128248751"	
+	}
+]
