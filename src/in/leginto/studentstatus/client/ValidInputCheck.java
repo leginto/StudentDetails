@@ -7,7 +7,7 @@ public class ValidInputCheck {
 	{
 		for(char c:name.toCharArray())
 		{
-			if(! ((c>=65 && c<=90) || (c>=97 && c<=122)))
+			if(! ((c>=65 && c<=90) || (c>=97 && c<=122) || c==' '))
 			{
 				return false;
 			}

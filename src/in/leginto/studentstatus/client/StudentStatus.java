@@ -1,30 +1,16 @@
 package in.leginto.studentstatus.client;
 
 
-import java.awt.GridLayout;
-import java.sql.Savepoint;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.jetty.util.ajax.JSON;
-
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dev.json.JsonValue;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -33,8 +19,6 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.layout.client.Layout;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -45,17 +29,11 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
-//import com.sun.org.apache.xpath.internal.operations.String;
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
-import java_cup.parser;
 
 public class StudentStatus implements EntryPoint {
 	
@@ -102,31 +80,12 @@ public class StudentStatus implements EntryPoint {
 	
 	private static final List<Students> STUDENTS = Arrays.asList();
 			
-			
-			/*
-			asList(new Students("STD0001","name", "chandfi", "841684354"),
-			new Students("STD0002", "ndfge", "chandfi", "8548514354"),
-			new Students("STD0003", "ndffewa", "sdfadfandfi", "8646684354"));
-			*/
-
+	@Override
 	public void onModuleLoad() {
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		final CellTable<Students> table = new CellTable<Students>();
 		
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		
-		
-		
-		
-		
 		
 		
 		// create 4 columns 
@@ -181,16 +140,6 @@ public class StudentStatus implements EntryPoint {
 		
 		final List<Students> list = dataProvider.getList();
 		
-		/*
-		for(Students student : STUDENTS)
-			list.add(student);
-		*/
-		
-		// read data from json file and store in CellTable
-		
-		// to collect data from studentdata.json
-		
-		
 		
 		final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET,"studentnames.json");
 		
@@ -228,10 +177,6 @@ public class StudentStatus implements EntryPoint {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		
-		
-		
 		
 		// dialog layout for add student
 		
@@ -327,7 +272,6 @@ public class StudentStatus implements EntryPoint {
 		});
 		
 		
-		// verify for valid data
 		
 		
 		
@@ -401,6 +345,9 @@ public class StudentStatus implements EntryPoint {
 				// TODO Auto-generated method stub
 				addStuDialog.hide();
 				
+				// verify for valid data
+				
+				
 				String errorMsg = "Possible Mistakes:\n";
 				
 				boolean validData = true;
@@ -452,8 +399,6 @@ public class StudentStatus implements EntryPoint {
 				{
 					Window.alert(errorMsg);
 				}
-				
-				//Window.alert(errorMsg);
 				
 			}
 		});
@@ -509,6 +454,7 @@ public class StudentStatus implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				
+				
 				viewStuDialog.hide();
 				
 			}
@@ -534,7 +480,6 @@ public class StudentStatus implements EntryPoint {
 				
 			}
 		});
-		
 		
 		
 		RootPanel.get().add(mainMenu);
