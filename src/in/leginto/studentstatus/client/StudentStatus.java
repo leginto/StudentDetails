@@ -96,7 +96,7 @@ public class StudentStatus implements EntryPoint {
 	
 //	private static List<Students> STUDENTS = 
 	
-	private static List<Students> STUDENTS = new ArrayList<Students>();
+	private static final List<Students> STUDENTS = Arrays.asList();
 			
 			
 			/*
@@ -108,58 +108,6 @@ public class StudentStatus implements EntryPoint {
 	public void onModuleLoad() {
 		
 		
-		// to collect data from studentdata.json
-		
-		
-		
-		final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET,"studentnames.json");
-		
-		
-		try {
-			requestBuilder.sendRequest(null, new RequestCallback() {
-				
-				@Override
-				public void onResponseReceived(Request request, Response response) {
-					// TODO Auto-generated method stub
-					
-					JSONArray jsonArray = (JSONArray) JSONParser.parseStrict(response.getText());
-					
-					for(int i=0; i<jsonArray.size(); i++)
-					{
-						JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-						STUDENTS.add(new Students(
-								jsonObject.get("sid").toString(), 
-								jsonObject.get("sname").toString(), 
-								jsonObject.get("semail").toString(), 
-								jsonObject.get("smobile").toString()));
-					}
-					
-					
-					//Window.alert(jsonObject.get("sid").toString());
-					
-					
-					
-					//JSONValue jsonValue = JSONParser.parseStrict(response.getText());
-					
-					//Window.alert(jsonValue.isObject().get("sid").toString());
-					
-					//Window.alert(response.toString());
-					
-					Window.alert(response.getText());
-					
-					
-				}
-				
-				@Override
-				public void onError(Request request, Throwable exception) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
-		} catch (RequestException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
 		
 		
@@ -169,7 +117,7 @@ public class StudentStatus implements EntryPoint {
 		
 		CellTable<Students> table = new CellTable<Students>();
 		
-		//table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		
 		
 		
@@ -226,12 +174,53 @@ public class StudentStatus implements EntryPoint {
 		
 		final List<Students> list = dataProvider.getList();
 		
+		/*
 		for(Students student : STUDENTS)
 			list.add(student);
-		
+		*/
 		
 		// read data from json file and store in CellTable
 		
+		// to collect data from studentdata.json
+		
+		
+		
+		final RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET,"studentnames.json");
+		
+		
+		try {
+			requestBuilder.sendRequest(null, new RequestCallback() {
+				
+				@Override
+				public void onResponseReceived(Request request, Response response) {
+					// TODO Auto-generated method stub
+					
+					JSONArray jsonArray = (JSONArray) JSONParser.parseStrict(response.getText());
+					
+					for(int i=0; i<jsonArray.size(); i++)
+					{
+						JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+						list.add(new Students(
+								jsonObject.get("sid").toString().replace("\"", ""), 
+								jsonObject.get("sname").toString().replace("\"", ""), 
+								jsonObject.get("semail").toString().replace("\"", ""), 
+								jsonObject.get("smobile").toString().replace("\"", "")));
+					}
+					
+					
+					
+				}
+				
+				@Override
+				public void onError(Request request, Throwable exception) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+		} catch (RequestException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		
 		
@@ -432,7 +421,7 @@ public class StudentStatus implements EntryPoint {
 						mobileText.getText().toString()!= "Eg: 9999999999")
 				{
 					String newSid = ""+(list.size()+1);
-					while(newSid.length()<4)
+					while(newSid.length()<3)
 						newSid = "0"+newSid;
 					
 					
