@@ -1,6 +1,7 @@
 package in.leginto.studentstatus.client;
 
 
+import java.awt.GridLayout;
 import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +15,8 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
@@ -228,12 +231,13 @@ public class StudentStatus implements EntryPoint {
 		
 		
 		
+		
+		
 		// dialog layout for add student
 		
+		final Grid addStuGrid = new Grid(3, 2);
 		
-		HorizontalPanel horizPan1 = new HorizontalPanel();
-		HorizontalPanel horizPan2 = new HorizontalPanel();
-		HorizontalPanel horizPan3 = new HorizontalPanel();
+		
 		HorizontalPanel horizPan4 = new HorizontalPanel();
 		
 		
@@ -244,7 +248,7 @@ public class StudentStatus implements EntryPoint {
 		final TextBox mobileText = new TextBox();
 		
 
-		
+		// add student click events
 		nameText.addMouseDownHandler(new MouseDownHandler() {
 			
 			@Override
@@ -302,7 +306,7 @@ public class StudentStatus implements EntryPoint {
 			@Override
 			public void onMouseDown(MouseDownEvent event) {
 				// TODO Auto-generated method stub
-				if(mobileText.getText().equals("Eg: 9999999999"))
+				if(mobileText.getText().equals("9999999999"))
 				{
 					mobileText.setText("");
 				}
@@ -317,20 +321,13 @@ public class StudentStatus implements EntryPoint {
 				// TODO Auto-generated method stub
 				if(mobileText.getText().length()==0)
 				{
-					mobileText.setText("Eg: 9999999999");
+					mobileText.setText("9999999999");
 				}
 			}
 		});
 		
 		
-		horizPan1.add(new Label(" \0 \0 Name: \0 \0  \0 \0  \0 \0  \0 \0  \0 \0 "));
-		horizPan1.add(nameText);
-		
-		horizPan2.add(new Label(" \0 \0 Email Id:\0 \0  \0 \0 \0 \0 \0"));
-		horizPan2.add(emailText);
-		
-		horizPan3.add(new Label(" \0 \0 Mobiel No: \0 \0  \0 \0 "));
-		horizPan3.add(mobileText);
+		// verify for valid data
 		
 		
 		
@@ -339,14 +336,23 @@ public class StudentStatus implements EntryPoint {
 		Button cancelButton = new Button("Cancel");
 		final VerticalPanel vertiPan = new VerticalPanel();
 		
+		
+		addStuGrid.setText(0, 0, "Name:");
+		addStuGrid.setText(1, 0, "Email Id:");
+		addStuGrid.setText(2, 0, "Mobile No:");
+		
+		addStuGrid.setWidget(0, 1, nameText);
+		addStuGrid.setWidget(1, 1, emailText);
+		addStuGrid.setWidget(2, 1, mobileText);
+		
+		
+		
+		
 		horizPan4.add(saveButton);
 		horizPan4.add(cancelButton);
 		
 		
-		
-		vertiPan.add(horizPan1);
-		vertiPan.add(horizPan2);
-		vertiPan.add(horizPan3);
+		vertiPan.add(addStuGrid);
 		vertiPan.add(horizPan4);
 		
 		
@@ -369,7 +375,7 @@ public class StudentStatus implements EntryPoint {
 				
 				nameText.setText("Enter Name");
 				emailText.setText("email@example.com");
-				mobileText.setText("Eg: 9999999999");
+				mobileText.setText("9999999999");
 				
 				
 				
@@ -386,14 +392,7 @@ public class StudentStatus implements EntryPoint {
 			}
 		};
 		
-		
-		
-		
-		
-		
-		
-		
-		
+				
 		// save button logic
 		saveButton.addClickHandler(new ClickHandler() {
 			
@@ -402,11 +401,38 @@ public class StudentStatus implements EntryPoint {
 				// TODO Auto-generated method stub
 				addStuDialog.hide();
 				
+				String errorMsg = "Possible Mistakes:\n";
+				
+				boolean validData = true;
+				
+				ValidInputCheck validInput = new ValidInputCheck();
+				
+				if(! validInput.isValidName(nameText.getText().toString()))
+				{
+					errorMsg = errorMsg.concat("Name: Special characters not allowed\n");
+					validData = false;
+				}
+				
+				if(! validInput.isValidEmail(emailText.getText().toString()))
+				{
+					errorMsg = errorMsg.concat("Email: Only _  . allowed and check domain name also\n");
+					validData = false;
+				}
+				
+				if(! validInput.isValidMobile(mobileText.getText().toString()))
+				{
+					errorMsg = errorMsg.concat("Mobile: First digit must be 9, number of digits should be 10 only\n");
+					validData = false;
+				}
+				
+				
+				
+				
 				// logic to add (name, email, mobile)to the existing record
 				
 				if(nameText.getText().toString() != "Enter Name" && 
 						emailText.getText().toString() != "email@example.com" && 
-						mobileText.getText().toString()!= "Eg: 9999999999")
+						mobileText.getText().toString()!= "9999999999" && validData)
 				{
 					String newSid = ""+(list.size()+1);
 					while(newSid.length()<3)
@@ -422,6 +448,12 @@ public class StudentStatus implements EntryPoint {
 					
 				}
 				
+				if(! errorMsg.equals("Possible Mistakes:\n"))
+				{
+					Window.alert(errorMsg);
+				}
+				
+				//Window.alert(errorMsg);
 				
 			}
 		});
@@ -467,12 +499,6 @@ public class StudentStatus implements EntryPoint {
 				
 				viewStuDialog.show();
 				
-				
-				
-				
-				
-				
-				
 			}
 		};
 		
@@ -487,7 +513,6 @@ public class StudentStatus implements EntryPoint {
 				
 			}
 		});
-		
 		
 		
 		
@@ -518,12 +543,5 @@ public class StudentStatus implements EntryPoint {
 		
 		
 		
-		
-		
-		
-		
-		
-	
-	
 	}
 }
