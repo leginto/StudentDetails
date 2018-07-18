@@ -40,6 +40,7 @@ import com.google.gwt.user.client.Window;
 //import com.google.gwt.user.client.rpc.core.java.util.Arrays;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -115,7 +116,7 @@ public class StudentStatus implements EntryPoint {
 		
 		
 		
-		CellTable<Students> table = new CellTable<Students>();
+		final CellTable<Students> table = new CellTable<Students>();
 		
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		
@@ -166,6 +167,9 @@ public class StudentStatus implements EntryPoint {
 		table.addColumn(nameColumn, "Name");
 		table.addColumn(emailColumn, "E-mail");
 		table.addColumn(mobileColumn, "Mobile Number");
+		
+		
+		
 		
 		final ListDataProvider<Students> dataProvider = new ListDataProvider<Students>();
 		
@@ -387,22 +391,6 @@ public class StudentStatus implements EntryPoint {
 		
 		
 		
-		// view student command
-		Command viewStudent = new Command() {
-			
-			@Override
-			public void execute() {
-				// TODO Auto-generated method stub
-				Window.alert("View student");
-			}
-		};
-		
-		
-		// created menu bar
-		final MenuBar mainMenu = new MenuBar();
-		
-		mainMenu.addItem("Add Student",addStudent);
-		mainMenu.addItem("View Student", viewStudent);
 		
 		
 		
@@ -437,6 +425,80 @@ public class StudentStatus implements EntryPoint {
 				
 			}
 		});
+		
+		
+		final DialogBox viewStuDialog = new DialogBox();
+		
+		viewStuDialog.setText("View Student Details");
+		
+		final Grid viewStuGrid = new Grid(5,2);
+		
+		final Button closeButton = new Button("Close");
+		
+		final VerticalPanel verticalPanel2 = new VerticalPanel(); 
+		
+		
+		// view student command
+		Command viewStudent = new Command() {
+			
+			@Override
+			public void execute() {
+				// TODO Auto-generated method stub
+				
+				final Students showStudent = list.get(table.getKeyboardSelectedRow());
+				
+				viewStuGrid.setText(0, 0, "Student Id:");
+				viewStuGrid.setText(1, 0, "Name:");
+				viewStuGrid.setText(2, 0, "E-mail:");
+				viewStuGrid.setText(3, 0, "Mobile No:");
+				
+				viewStuGrid.setText(0, 1, showStudent.getSid().toString());
+				viewStuGrid.setText(1, 1, showStudent.getName().toString());
+				viewStuGrid.setText(2, 1, showStudent.getEmail().toString());
+				viewStuGrid.setText(3, 1, "+91-"+showStudent.getMobile().toString());
+				
+				
+				verticalPanel2.add(viewStuGrid);
+				verticalPanel2.add(closeButton);				
+				
+				viewStuDialog.setGlassEnabled(true);
+				viewStuDialog.center();
+				viewStuDialog.add(verticalPanel2);
+				
+				viewStuDialog.show();
+				
+				
+				
+				
+				
+				
+				
+			}
+		};
+		
+		
+		closeButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				
+				viewStuDialog.hide();
+				
+			}
+		});
+		
+		
+		
+		
+		// created menu bar
+		final MenuBar mainMenu = new MenuBar();
+		
+		mainMenu.addItem("Add Student",addStudent);
+		mainMenu.addItem("View Student", viewStudent);
+		
+		
+		
 		
 		cancelButton.addClickHandler(new ClickHandler() {
 			
