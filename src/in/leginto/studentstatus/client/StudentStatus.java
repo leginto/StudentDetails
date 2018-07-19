@@ -1,6 +1,7 @@
 package in.leginto.studentstatus.client;
 
 
+import java.awt.GraphicsDevice.WindowTranslucency;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,11 +25,13 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSe
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 //import com.google.gwt.user.client.rpc.core.java.util.Arrays;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -498,9 +501,28 @@ public class StudentStatus implements EntryPoint {
 			}
 		});
 		
+		Anchor link = new Anchor();
+		link.setText("Implementation");
+		
+		
+		link.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				Window.open("https://github.com/leginto/StudentDetails", null, null);
+				
+			}
+		});
+		
+		
+		VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.addStyleName("pointer");
+		
 		
 		RootPanel.get().add(mainMenu);
 		RootPanel.get().add(table);
+		RootPanel.get().add(link);
 		
 		
 		
