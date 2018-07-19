@@ -70,11 +70,36 @@ public class ValidInputCheck {
 		
 		return true;
 	}
-	
-	
-	
-	
-	
-	
 
 }
+
+class ConvertAlphabets
+{
+	public String convertSentenceCase(String name)
+	{
+		name = name.trim();
+		name = name.toLowerCase();
+		
+		char[] nameChar = name.toCharArray();
+		
+		if(nameChar[0]>=97 && nameChar[0]<=122)
+		{
+			nameChar[0] = (char) (nameChar[0] - 32); 
+		}
+		
+		for(int i=1; i< nameChar.length; i++)
+		{
+			if(nameChar[i]==32 && nameChar[i+1]!=32)
+			{
+				nameChar[i+1] = (char) (nameChar[i+1] - 32);
+			}			
+		}		
+		
+		name = nameChar.toString().valueOf(nameChar);
+		return name;
+	}	
+}
+
+
+
+

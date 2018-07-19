@@ -377,6 +377,8 @@ public class StudentStatus implements EntryPoint {
 				
 				// logic to add (name, email, mobile)to the existing record
 				
+				ConvertAlphabets alpha = new ConvertAlphabets();
+				
 				if(nameText.getText().toString() != "Enter Name" && 
 						emailText.getText().toString() != "email@example.com" && 
 						mobileText.getText().toString()!= "9999999999" && validData)
@@ -387,7 +389,7 @@ public class StudentStatus implements EntryPoint {
 					
 					
 					
-					list.add(new Students("STD"+newSid ,nameText.getText().toString(), 
+					list.add(new Students("STD"+newSid ,alpha.convertSentenceCase(nameText.getText().toString()), 
 							emailText.getText().toString(), 
 							mobileText.getText().toString()));
 					
@@ -413,6 +415,7 @@ public class StudentStatus implements EntryPoint {
 		final Button closeButton = new Button("Close");
 		
 		final VerticalPanel verticalPanel2 = new VerticalPanel(); 
+		
 		
 		
 		// view student command
@@ -455,11 +458,25 @@ public class StudentStatus implements EntryPoint {
 				// TODO Auto-generated method stub
 				
 				
+				table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 				viewStuDialog.hide();
 				
 			}
 		});
 		
+		
+		Command removeStudent = new Command() {
+			
+			@Override
+			public void execute() {
+				// TODO Auto-generated method stub
+				
+				
+				list.remove(table.getKeyboardSelectedRow());
+				dataProvider.refresh();
+				
+			}
+		};
 		
 		
 		// created menu bar
@@ -467,7 +484,7 @@ public class StudentStatus implements EntryPoint {
 		
 		mainMenu.addItem("Add Student",addStudent);
 		mainMenu.addItem("View Student", viewStudent);
-		
+		mainMenu.addItem("Remove Student", removeStudent);
 		
 		
 		
