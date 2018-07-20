@@ -1,7 +1,6 @@
 package in.leginto.studentstatus.client;
 
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
@@ -35,8 +34,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
-
-//import in.techno.testcell.client.TestTheCellTable.Contact;
 
 public class StudentStatus implements EntryPoint {
 	
@@ -79,9 +76,6 @@ public class StudentStatus implements EntryPoint {
 		
 	}
 	
-	
-	
-	private static final List<Students> STUDENTS = Arrays.asList();
 			
 	@Override
 	public void onModuleLoad() {

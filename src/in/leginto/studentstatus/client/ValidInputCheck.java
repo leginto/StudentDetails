@@ -95,7 +95,7 @@ class ConvertAlphabets
 			}			
 		}		
 		
-		name = nameChar.toString().valueOf(nameChar);
+		name = String.valueOf(nameChar);
 		return name;
 	}	
 }
