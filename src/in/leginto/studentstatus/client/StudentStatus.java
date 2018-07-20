@@ -1,7 +1,6 @@
 package in.leginto.studentstatus.client;
 
 
-import java.awt.GraphicsDevice.WindowTranslucency;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,17 +25,18 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
-//import com.google.gwt.user.client.rpc.core.java.util.Arrays;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SingleSelectionModel;
+
+//import in.techno.testcell.client.TestTheCellTable.Contact;
 
 public class StudentStatus implements EntryPoint {
 	
@@ -79,7 +79,7 @@ public class StudentStatus implements EntryPoint {
 		
 	}
 	
-//	private static List<Students> STUDENTS = 
+	
 	
 	private static final List<Students> STUDENTS = Arrays.asList();
 			
@@ -88,7 +88,7 @@ public class StudentStatus implements EntryPoint {
 		
 		final CellTable<Students> table = new CellTable<Students>();
 		
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		
 		
 		// create 4 columns 
@@ -386,10 +386,11 @@ public class StudentStatus implements EntryPoint {
 						emailText.getText().toString() != "email@example.com" && 
 						mobileText.getText().toString()!= "9999999999" && validData)
 				{
-					String newSid = ""+(list.size()+1);
+					String newSid = ""+(Integer.parseInt(list.get(list.size()-1).getSid().substring(3)) +1);
 					while(newSid.length()<3)
+					{
 						newSid = "0"+newSid;
-					
+					}
 					
 					
 					list.add(new Students("STD"+newSid ,alpha.convertSentenceCase(nameText.getText().toString()), 
@@ -420,6 +421,12 @@ public class StudentStatus implements EntryPoint {
 		final VerticalPanel verticalPanel2 = new VerticalPanel(); 
 		
 		
+		// to get selection
+		
+		final SingleSelectionModel<Students> selectionModel = new SingleSelectionModel<Students>();
+	    table.setSelectionModel(selectionModel);
+	    
+	    
 		
 		// view student command
 		Command viewStudent = new Command() {
@@ -428,27 +435,36 @@ public class StudentStatus implements EntryPoint {
 			public void execute() {
 				// TODO Auto-generated method stub
 				
-				final Students showStudent = list.get(table.getKeyboardSelectedRow());
-				
-				viewStuGrid.setText(0, 0, "Student Id:");
-				viewStuGrid.setText(1, 0, "Name:");
-				viewStuGrid.setText(2, 0, "E-mail:");
-				viewStuGrid.setText(3, 0, "Mobile No:");
-				
-				viewStuGrid.setText(0, 1, showStudent.getSid().toString());
-				viewStuGrid.setText(1, 1, showStudent.getName().toString());
-				viewStuGrid.setText(2, 1, showStudent.getEmail().toString());
-				viewStuGrid.setText(3, 1, "+91-"+showStudent.getMobile().toString());
-				
-				
-				verticalPanel2.add(viewStuGrid);
-				verticalPanel2.add(closeButton);				
-				
-				viewStuDialog.setGlassEnabled(true);
-				viewStuDialog.center();
-				viewStuDialog.add(verticalPanel2);
-				
-				viewStuDialog.show();
+		    	Students selected = selectionModel.getSelectedObject();
+		        if (selected != null) {
+		        	
+		        	viewStuGrid.setText(0, 0, "Student Id:");
+					viewStuGrid.setText(1, 0, "Name:");
+					viewStuGrid.setText(2, 0, "E-mail:");
+					viewStuGrid.setText(3, 0, "Mobile No:");
+					
+					viewStuGrid.setText(0, 1, selected.getSid().toString());
+					viewStuGrid.setText(1, 1, selected.getName().toString());
+					viewStuGrid.setText(2, 1, selected.getEmail().toString());
+					viewStuGrid.setText(3, 1, "+91-"+selected.getMobile().toString());
+					
+					
+					verticalPanel2.add(viewStuGrid);
+					verticalPanel2.add(closeButton);				
+					
+					viewStuDialog.setGlassEnabled(true);
+					viewStuDialog.center();
+					viewStuDialog.add(verticalPanel2);
+					
+					//viewStuDialog.show();
+		        	
+		        	
+		          //Window.alert("You selected: " + selected.name);
+		        }
+		        else
+		        {
+		        	Window.alert("Please Select a student first");
+		        }
 				
 			}
 		};
@@ -460,7 +476,7 @@ public class StudentStatus implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				
-				
+				selectionModel.clear();
 				table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 				viewStuDialog.hide();
 				
@@ -472,11 +488,29 @@ public class StudentStatus implements EntryPoint {
 			
 			@Override
 			public void execute() {
-				// TODO Auto-generated method stub
+				
+				boolean selectStu = false;
+				
+				for(int i=0; i< list.size(); i++)
+				{
+					if(selectionModel.isSelected(list.get(i)))
+					{
+						list.remove(i);
+						dataProvider.refresh();
+						selectStu = true;
+						selectionModel.clear();
+						break;
+						
+					}
+				}
 				
 				
-				list.remove(table.getKeyboardSelectedRow());
-				dataProvider.refresh();
+				
+				
+				if(! selectStu)
+				{
+					Window.alert("Please Select a student first");
+				}
 				
 			}
 		};
@@ -515,17 +549,9 @@ public class StudentStatus implements EntryPoint {
 			}
 		});
 		
-		
-		VerticalPanel verticalPanel = new VerticalPanel();
-		verticalPanel.addStyleName("pointer");
-		
-		
 		RootPanel.get().add(mainMenu);
 		RootPanel.get().add(table);
 		RootPanel.get().add(link);
-		
-		
-		
 		
 	}
 }
