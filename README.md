@@ -1,5 +1,5 @@
 # Student Details
-This is simple student details record implementation
+This is simple student details record implementation.
 
 Final files to deploy over web:
 https://github.com/leginto/StudentDetails/tree/master/StudentStaus_deploy
