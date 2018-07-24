@@ -8,8 +8,10 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -34,6 +36,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
+
+//import in.techno.testcell.client.TestTheCellTable.Contact;
 
 public class StudentStatus implements EntryPoint {
 	
@@ -76,6 +80,9 @@ public class StudentStatus implements EntryPoint {
 		
 	}
 	
+	
+	
+	//private static final List<Students> STUDENTS = Arrays.asList();
 			
 	@Override
 	public void onModuleLoad() {
@@ -90,7 +97,7 @@ public class StudentStatus implements EntryPoint {
 
 			@Override
 			public String getValue(Students object) {
-				// TODO Auto-generated method stub
+				
 				return object.getSid();
 			}
 		};
@@ -99,7 +106,7 @@ public class StudentStatus implements EntryPoint {
 
 			@Override
 			public String getValue(Students object) {
-				// TODO Auto-generated method stub
+				
 				return object.getName();
 			}
 		};
@@ -108,7 +115,7 @@ public class StudentStatus implements EntryPoint {
 
 			@Override
 			public String getValue(Students object) {
-				// TODO Auto-generated method stub
+				
 				return object.getEmail();
 			}
 		};
@@ -117,7 +124,7 @@ public class StudentStatus implements EntryPoint {
 
 			@Override
 			public String getValue(Students object) {
-				// TODO Auto-generated method stub
+				
 				return object.getMobile();
 			}
 		};
@@ -146,7 +153,7 @@ public class StudentStatus implements EntryPoint {
 				
 				@Override
 				public void onResponseReceived(Request request, Response response) {
-					// TODO Auto-generated method stub
+					
 					
 					JSONArray jsonArray = (JSONArray) JSONParser.parseStrict(response.getText());
 					
@@ -166,7 +173,7 @@ public class StudentStatus implements EntryPoint {
 				
 				@Override
 				public void onError(Request request, Throwable exception) {
-					// TODO Auto-generated method stub
+					
 					
 				}
 			});
@@ -191,14 +198,23 @@ public class StudentStatus implements EntryPoint {
 		
 
 		// add student click events
-		nameText.addMouseDownHandler(new MouseDownHandler() {
+		
+		nameText.addFocusHandler(new FocusHandler() {
 			
 			@Override
-			public void onMouseDown(MouseDownEvent event) {
+			public void onFocus(FocusEvent event) {
 				// TODO Auto-generated method stub
-				if(nameText.getText().equals("Enter Name"))
+				if(nameText.getText().length()==0)
+				{
+					nameText.setText("Enter Name");
+					nameText.getElement().getStyle().setColor("#aaa");
+					
+				}
+				else if(nameText.getText().equals("Enter Name"))
 				{
 					nameText.setText("");
+					nameText.getElement().getStyle().setColor("#000");
+					
 				}
 				
 			}
@@ -208,49 +224,75 @@ public class StudentStatus implements EntryPoint {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-				// TODO Auto-generated method stub
+				
 				if(nameText.getText().length()==0)
 				{
 					nameText.setText("Enter Name");
+					nameText.getElement().getStyle().setColor("#aaa");
 				}
 			}
 		});
 		
 		//------------------
-		emailText.addMouseDownHandler(new MouseDownHandler() {
+		
+		
+		emailText.addFocusHandler(new FocusHandler() {
 			
 			@Override
-			public void onMouseDown(MouseDownEvent event) {
-				// TODO Auto-generated method stub
-				if(emailText.getText().equals("email@example.com"))
-				{
-					emailText.setText("");
-				}
-				
-			}
-		});
-		emailText.addBlurHandler(new BlurHandler() {
-			
-			@Override
-			public void onBlur(BlurEvent event) {
+			public void onFocus(FocusEvent event) {
 				// TODO Auto-generated method stub
 				if(emailText.getText().length()==0)
 				{
 					emailText.setText("email@example.com");
+					emailText.getElement().getStyle().setColor("#aaa");
+					
+				}
+				else if(emailText.getText().equals("email@example.com"))
+				{
+					emailText.setText("");
+					emailText.getElement().getStyle().setColor("#000");
+					
 				}
 				
 			}
 		});
 		
-		//-----------------
-		mobileText.addMouseDownHandler(new MouseDownHandler() {
+		
+		emailText.addBlurHandler(new BlurHandler() {
 			
 			@Override
-			public void onMouseDown(MouseDownEvent event) {
+			public void onBlur(BlurEvent event) {
+				
+				if(emailText.getText().length()==0)
+				{
+					emailText.setText("email@example.com");
+					emailText.getElement().getStyle().setColor("#aaa");
+					
+				}
+				
+			}
+		});
+		
+		
+		
+		//-----------------
+		
+		mobileText.addFocusHandler(new FocusHandler() {
+			
+			@Override
+			public void onFocus(FocusEvent event) {
 				// TODO Auto-generated method stub
-				if(mobileText.getText().equals("9999999999"))
+				if(mobileText.getText().length()==0)
+				{
+					mobileText.setText("9999999999");
+					mobileText.getElement().getStyle().setColor("#aaa");
+					
+				}
+				else if(mobileText.getText().equals("9999999999"))
 				{
 					mobileText.setText("");
+					mobileText.getElement().getStyle().setColor("#000");
+					
 				}
 				
 			}
@@ -260,10 +302,12 @@ public class StudentStatus implements EntryPoint {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-				// TODO Auto-generated method stub
+				
 				if(mobileText.getText().length()==0)
 				{
 					mobileText.setText("9999999999");
+					mobileText.getElement().getStyle().setColor("#aaa");
+					
 				}
 			}
 		});
@@ -309,8 +353,10 @@ public class StudentStatus implements EntryPoint {
 			
 			@Override
 			public void execute() {
-				// TODO Auto-generated method stub
+				
 				//Window.alert("Student added");
+				
+				
 				
 				// setting values
 				
@@ -318,6 +364,9 @@ public class StudentStatus implements EntryPoint {
 				emailText.setText("email@example.com");
 				mobileText.setText("9999999999");
 				
+				nameText.getElement().getStyle().setColor("#aaa");
+				emailText.getElement().getStyle().setColor("#aaa");
+				mobileText.getElement().getStyle().setColor("#aaa");
 				
 				
 				//creating a dialog box
@@ -326,6 +375,7 @@ public class StudentStatus implements EntryPoint {
 				addStuDialog.setGlassEnabled(true);
 				addStuDialog.center();
 				addStuDialog.add(vertiPan);
+				addStuDialog.center();
 				addStuDialog.show();
 				
 				
@@ -333,14 +383,14 @@ public class StudentStatus implements EntryPoint {
 			}
 		};
 		
-				
+		
 		// save button logic
 		saveButton.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				addStuDialog.hide();
+				
+				//addStuDialog.hide();
 				
 				// verify for valid data
 				
@@ -355,21 +405,49 @@ public class StudentStatus implements EntryPoint {
 				{
 					errorMsg = errorMsg.concat("Name: Special characters not allowed\n");
 					validData = false;
+					nameText.getElement().getStyle().setColor("#f00");
+					nameText.addKeyDownHandler(new KeyDownHandler() {
+						
+						@Override
+						public void onKeyDown(KeyDownEvent event) {
+							// TODO Auto-generated method stub
+							nameText.getElement().getStyle().setColor("#000");
+						}
+					});
 				}
 				
 				if(! validInput.isValidEmail(emailText.getText().toString()))
 				{
 					errorMsg = errorMsg.concat("Email: Only _  . allowed and check domain name also\n");
 					validData = false;
+					emailText.getElement().getStyle().setColor("#f00");
+					emailText.addKeyDownHandler(new KeyDownHandler() {
+						
+						@Override
+						public void onKeyDown(KeyDownEvent event) {
+							// TODO Auto-generated method stub
+							emailText.getElement().getStyle().setColor("#000");
+						}
+					});
 				}
 				
 				if(! validInput.isValidMobile(mobileText.getText().toString()))
 				{
 					errorMsg = errorMsg.concat("Mobile: First digit must be 9, number of digits should be 10 only\n");
 					validData = false;
+					mobileText.getElement().getStyle().setColor("#f00");
+					mobileText.addKeyDownHandler(new KeyDownHandler() {
+						
+						@Override
+						public void onKeyDown(KeyDownEvent event) {
+							// TODO Auto-generated method stub
+							mobileText.getElement().getStyle().setColor("#000");
+						}
+					});
 				}
 				
 				
+				//Window.alert(""+list.size());
 				
 				
 				// logic to add (name, email, mobile)to the existing record
@@ -380,12 +458,20 @@ public class StudentStatus implements EntryPoint {
 						emailText.getText().toString() != "email@example.com" && 
 						mobileText.getText().toString()!= "9999999999" && validData)
 				{
+					addStuDialog.hide();
 					String newSid = ""+(Integer.parseInt(list.get(list.size()-1).getSid().substring(3)) +1);
+					if(list.size()==0)
+					{
+						Window.alert("null");
+						//newSid="001";
+					}
+						
 					while(newSid.length()<3)
 					{
 						newSid = "0"+newSid;
 					}
 					
+					//Window.alert("svae region");
 					
 					list.add(new Students("STD"+newSid ,alpha.convertSentenceCase(nameText.getText().toString()), 
 							emailText.getText().toString(), 
@@ -427,7 +513,7 @@ public class StudentStatus implements EntryPoint {
 			
 			@Override
 			public void execute() {
-				// TODO Auto-generated method stub
+				
 				
 		    	Students selected = selectionModel.getSelectedObject();
 		        if (selected != null) {
@@ -450,10 +536,7 @@ public class StudentStatus implements EntryPoint {
 					viewStuDialog.center();
 					viewStuDialog.add(verticalPanel2);
 					
-					//viewStuDialog.show();
-		        	
-		        	
-		          //Window.alert("You selected: " + selected.name);
+					
 		        }
 		        else
 		        {
@@ -468,7 +551,7 @@ public class StudentStatus implements EntryPoint {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
+				
 				
 				selectionModel.clear();
 				table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
@@ -523,12 +606,14 @@ public class StudentStatus implements EntryPoint {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
+				
 				addStuDialog.hide();
 				
 			}
 		});
 		
+		
+		// implementation link
 		Anchor link = new Anchor();
 		link.setText("Implementation");
 		
@@ -537,11 +622,12 @@ public class StudentStatus implements EntryPoint {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
+				
 				Window.open("https://github.com/leginto/StudentDetails", null, null);
 				
 			}
 		});
+		
 		
 		RootPanel.get().add(mainMenu);
 		RootPanel.get().add(table);
